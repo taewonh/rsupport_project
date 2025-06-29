@@ -23,7 +23,6 @@ public class AnnouncementRepositoryTest {
                 .start_expose_time(LocalDateTime.now())
                 .end_expose_time(LocalDateTime.now())
                 .build();
-        Assertions.assertNotNull(announcement);
         Announcement registered = repository.save(announcement);
 
         Long id = registered.getId();
