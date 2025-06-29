@@ -27,6 +27,9 @@ public class AnnouncementRegisterDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime end_expose_time;
 
+    @NotEmpty(message = "announcement author must not be null")
+    private String author;
+
     public Announcement toEntity() {
 
         return Announcement.insertBuilder()
@@ -34,6 +37,7 @@ public class AnnouncementRegisterDto {
                 .description(description)
                 .start_expose_time(start_expose_time)
                 .end_expose_time(end_expose_time)
+                .author(author)
                 .build();
     }
 }

@@ -40,18 +40,23 @@ public class Announcement {
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
+    @Column(name = "author")
+    private String author;
+
     // TODO 첨부파일 목록은 별도 리스트로 관리 필요
 
     @Builder(builderClassName = "InsertBuilder", builderMethodName = "insertBuilder")
     public Announcement(String title,
                         String description,
                         LocalDateTime start_expose_time,
-                        LocalDateTime end_expose_time) {
+                        LocalDateTime end_expose_time,
+                        String author) {
         this.title = title;
         this.description = description;
         this.start_expose_time = start_expose_time;
         this.end_expose_time = end_expose_time;
         this.deleted = false;
+        this.author = author;
     }
 
     public void delete() {

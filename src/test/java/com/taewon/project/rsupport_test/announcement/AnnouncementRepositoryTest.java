@@ -22,6 +22,7 @@ public class AnnouncementRepositoryTest {
                 .description("테스트 공지사항 내용")
                 .start_expose_time(LocalDateTime.now())
                 .end_expose_time(LocalDateTime.now())
+                .author("홍태원")
                 .build();
         Announcement registered = repository.save(announcement);
 
