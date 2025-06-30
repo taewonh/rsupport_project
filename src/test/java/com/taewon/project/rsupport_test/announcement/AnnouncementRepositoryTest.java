@@ -16,7 +16,7 @@ public class AnnouncementRepositoryTest {
     @Test
     public void 공지사항_저장() {
 
-        Announcement announcement = AnnouncementTestUtil.createRegisterDtoAvailableExpose().toEntity();
+        Announcement announcement = AnnouncementTestUtil.createRegisterDtoExpose().toEntity();
         Announcement registered = repository.save(announcement);
 
         Long id = registered.getId();

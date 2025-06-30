@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
-public class AnnouncementRegisterDto {
+public class AnnouncementRegisterRequest {
 
     @Schema(description = "공지사항 제목")
     @NotEmpty(message = "announcement title must not be empty")

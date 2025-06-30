@@ -1,6 +1,6 @@
 package com.taewon.project.rsupport_test.announcement;
 
-import com.taewon.project.rsupport_test.announcement.dto.AnnouncementRegisterDto;
+import com.taewon.project.rsupport_test.announcement.dto.AnnouncementRegisterRequest;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementViewDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class AnnouncementServiceTest {
     @Test
     void 조회날짜가_시작_종료일자_사이일때_공지사항_열람() {
 
-        AnnouncementRegisterDto registerDto = AnnouncementTestUtil.createRegisterDtoAvailableExpose();
+        AnnouncementRegisterRequest registerDto = AnnouncementTestUtil.createRegisterDtoExpose();
         Announcement announcement = registerDto.toEntity();
 
         when(announcementRepository.save(any(Announcement.class))).thenAnswer(invocation -> {
@@ -48,18 +48,18 @@ public class AnnouncementServiceTest {
     @Test
     void 조회날짜가_시작일자_이전일때_공지사항_열람_불가() {
 
-        AnnouncementRegisterDto registerDto = AnnouncementTestUtil.createRegisterDtoBeforeExpose();
+        AnnouncementRegisterRequest registerDto = AnnouncementTestUtil.createRegisterDtoBeforeExpose();
         testFailedFindAnnouncementView(registerDto, "해당 공지사항의 열람 가능 기간이 시작되지 않았습니다.");
     }
 
     @Test
     void 조회날짜가_마지막일자_이후일때_공지사항_열람_불가() {
 
-        AnnouncementRegisterDto registerDto = AnnouncementTestUtil.createRegisterDtoAfterExpose();
+        AnnouncementRegisterRequest registerDto = AnnouncementTestUtil.createRegisterDtoAfterExpose();
         testFailedFindAnnouncementView(registerDto, "해당 공지사항의 열람 가능한 기간이 지났습니다.");
     }
 
-    private void testFailedFindAnnouncementView(AnnouncementRegisterDto registerDto, String expectedErrorMessage) {
+    private void testFailedFindAnnouncementView(AnnouncementRegisterRequest registerDto, String expectedErrorMessage) {
 
         Announcement announcement = registerDto.toEntity();
 
