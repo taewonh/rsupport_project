@@ -19,35 +19,35 @@ public class AnnouncementController {
 
     private final AnnouncementService announcementService;
 
-    @Operation(summary = "01. 공지사항 등록")
+    @Operation(summary = "공지사항 등록")
     @PostMapping
     public AnnouncementViewDto registerAnnouncement(@RequestBody AnnouncementRegisterRequest request) {
 
         return announcementService.register(request);
     }
 
-    @Operation(summary = "02. 공지사항 목록 조회")
+    @Operation(summary = "공지사항 목록 조회")
     @PostMapping(path = "/_search")
     public ListResult<AnnouncementSummaryDto> fetchAnnouncements(@RequestBody AnnouncementListRequest request) {
 
         return announcementService.list(request);
     }
 
-    @Operation(summary = "03. 공지사항 상세 조회")
+    @Operation(summary = "공지사항 상세 조회")
     @GetMapping(path = "/{id}")
     public AnnouncementViewDto detailAnnouncement(@PathVariable Long id) {
 
         return announcementService.detail(id);
     }
 
-    @Operation(summary = "04. 공지사항 삭제")
+    @Operation(summary = "공지사항 삭제")
     @DeleteMapping(path = "{id}")
     public void deleteAnnouncement(@PathVariable Long id) {
 
         announcementService.delete(id);
     }
 
-    @Operation(summary = "05. 공지사항 수정")
+    @Operation(summary = "공지사항 수정")
     @PutMapping(path = "{id}")
     public AnnouncementViewDto updateAnnouncement(@PathVariable Long id,
                                                   @RequestBody AnnouncementRegisterRequest request) {
