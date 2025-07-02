@@ -1,6 +1,7 @@
 package com.taewon.project.rsupport_test.announcement.dto;
 
 import com.taewon.project.rsupport_test.announcement.Announcement;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -38,12 +39,8 @@ public class AnnouncementViewDto {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if (now.isBefore(announcement.getStart_expose_time())) {
-            throw new RuntimeException("해당 공지사항의 열람 가능 기간이 시작되지 않았습니다.");
-        }
-
-        if (now.isAfter(announcement.getEnd_expose_time())) {
-            throw new RuntimeException("해당 공지사항의 열람 가능한 기간이 지났습니다.");
+        if (!announcement.availableExpose(now)) {
+            throw new RuntimeException("선택하신 공지사항의 열람 가능 기간이 아닙니다.");
         }
     }
 }

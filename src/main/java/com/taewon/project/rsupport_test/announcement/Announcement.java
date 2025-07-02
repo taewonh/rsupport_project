@@ -74,4 +74,17 @@ public class Announcement {
     void updatedAt() {
         this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
+
+    public boolean availableExpose(LocalDateTime now) {
+
+        if (now.isBefore(start_expose_time)) {
+            return false;
+        }
+
+        if (now.isAfter(end_expose_time)) {
+            return false;
+        }
+
+        return true;
+    }
 }

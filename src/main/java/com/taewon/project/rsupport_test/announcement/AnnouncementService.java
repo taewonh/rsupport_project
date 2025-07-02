@@ -1,12 +1,13 @@
 package com.taewon.project.rsupport_test.announcement;
 
+import com.taewon.project.rsupport_test.announcement.dto.AnnouncementListRequest;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementRegisterRequest;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementSummaryDto;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementViewDto;
 import com.taewon.project.rsupport_test.common.dto.ListResult;
+import com.taewon.project.rsupport_test.common.lucene.SearchCacheResult;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
 public class AnnouncementService {
 
     private final AnnouncementRepository repository;
+
+    private final AnnouncementCacheService announcementCacheService;
 
     public long register(AnnouncementRegisterRequest registerDto) {
 
@@ -25,30 +28,24 @@ public class AnnouncementService {
 
     public AnnouncementViewDto findAnnouncementView(long announcementId) {
 
-        // TODO repository select 하지말고 캐시에서 조회
         Announcement announcement = repository.findById(announcementId)
                 .orElseThrow(() -> new RuntimeException("Failed to select announcement."));
 
         return AnnouncementViewDto.fromEntity(announcement);
     }
 
-    public ListResult<AnnouncementSummaryDto> list() {
+    public ListResult<AnnouncementSummaryDto> list(AnnouncementListRequest request) throws Exception {
 
-        List<Announcement> announcements = repository.findAll();
-        if (CollectionUtils.isEmpty(announcements)) {
+        SearchCacheResult searchResult = announcementCacheService.search(request);
+        if (searchResult.getDocuments() == null) {
             return ListResult.empty();
         }
 
-        List<AnnouncementSummaryDto> dtoList = announcements.stream()
-                .map(announcement -> AnnouncementSummaryDto.builder()
-                        .id(announcement.getId())
-                        .title(announcement.getTitle())
-                        .author(announcement.getAuthor())
-                        .created_at(announcement.getCreatedAt())
-                        .updated_at(announcement.getUpdatedAt())
-                        .build())
+        List<AnnouncementSummaryDto> announcementSummaries = searchResult.getDocuments()
+                .stream()
+                .map(AnnouncementConverter::toSummary)
                 .toList();
 
-        return ListResult.of(dtoList);
+        return new ListResult<>(searchResult.getTotalCount(), request.getOffset(), announcementSummaries);
     }
 }

@@ -52,7 +52,7 @@ public class AnnouncementControllerTest {
     }
 
     @Test
-    public void 공지사항_목록_조회() {
+    public void 공지사항_목록_조회() throws Exception {
 
         AnnouncementListRequest request = AnnouncementListRequest.builder()
                 .build();

@@ -49,17 +49,17 @@ public class AnnouncementServiceTest {
     void 조회날짜가_시작일자_이전일때_공지사항_열람_불가() {
 
         AnnouncementRegisterRequest registerDto = AnnouncementTestUtil.createRegisterDtoBeforeExpose();
-        testFailedFindAnnouncementView(registerDto, "해당 공지사항의 열람 가능 기간이 시작되지 않았습니다.");
+        testFailedFindAnnouncementView(registerDto);
     }
 
     @Test
     void 조회날짜가_마지막일자_이후일때_공지사항_열람_불가() {
 
         AnnouncementRegisterRequest registerDto = AnnouncementTestUtil.createRegisterDtoAfterExpose();
-        testFailedFindAnnouncementView(registerDto, "해당 공지사항의 열람 가능한 기간이 지났습니다.");
+        testFailedFindAnnouncementView(registerDto);
     }
 
-    private void testFailedFindAnnouncementView(AnnouncementRegisterRequest registerDto, String expectedErrorMessage) {
+    private void testFailedFindAnnouncementView(AnnouncementRegisterRequest registerDto) {
 
         Announcement announcement = registerDto.toEntity();
 
@@ -77,7 +77,7 @@ public class AnnouncementServiceTest {
         });
 
         Assertions.assertEquals(
-                expectedErrorMessage, exception.getMessage()
+                "선택하신 공지사항의 열람 가능 기간이 아닙니다.", exception.getMessage()
         );
     }
 }
