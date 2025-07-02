@@ -15,6 +15,8 @@ public class AnnouncementSummaryDto {
 
     private String author;
 
+    private boolean expose;
+
     private LocalDateTime created_at;
 
     private LocalDateTime updated_at;

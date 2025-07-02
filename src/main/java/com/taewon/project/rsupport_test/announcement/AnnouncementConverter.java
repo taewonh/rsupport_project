@@ -61,6 +61,7 @@ public class AnnouncementConverter {
                 .id(Long.parseLong(document.get(PFN.id)))
                 .title(document.get(PFN.title))
                 .author(document.get(PFN.author))
+                .expose("T".equals(document.get(PFN.expose)))
                 .created_at(getTime(document, PFN.created_at))
                 .updated_at(getTime(document, PFN.updated_at))
                 .build();
