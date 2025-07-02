@@ -4,6 +4,7 @@ import com.taewon.project.rsupport_test.announcement.dto.AnnouncementListRequest
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementRegisterRequest;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementSummaryDto;
 import com.taewon.project.rsupport_test.common.dto.ListResult;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,6 @@ public class AnnouncementControllerTest {
 
     @Autowired
     private AnnouncementController announcementController;
-
-    @Autowired
-    private AnnouncementRepository announcementRepository;
 
     private static final int exposeDtoCount = 100;
     private static final int afterExposeDtoCount = 100;
@@ -52,11 +50,15 @@ public class AnnouncementControllerTest {
     }
 
     @Test
-    public void 공지사항_목록_조회() throws Exception {
+    public void 공지사항_목록_조회() {
 
         AnnouncementListRequest request = AnnouncementListRequest.builder()
+                .count(1000)
+                .offset(0)
                 .build();
 
         ListResult<AnnouncementSummaryDto> result = announcementController.fetchAnnouncements(request);
+        int totalRegisterCount = exposeDtoCount + afterExposeDtoCount + beforeExposeDtoCount;
+        Assertions.assertEquals(totalRegisterCount, result.getCount());
     }
 }

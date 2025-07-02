@@ -31,7 +31,7 @@ public class AnnouncementTestUtil {
 
         LocalDateTime now = LocalDateTime.now();
         return new AnnouncementRegisterRequest(
-                "공지사항 타이틀", "공지사항 내용",
+                "제목", "내용",
                 now.plusDays(beforeDays), now.plusDays(afterDays), "홍태원"
         );
     }
