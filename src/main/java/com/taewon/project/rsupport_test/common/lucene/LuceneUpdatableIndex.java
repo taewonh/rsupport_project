@@ -39,7 +39,6 @@ public class LuceneUpdatableIndex implements AutoCloseable {
                 return new TokenStreamComponents(tokenizer, filter);
             }
         };
-
         directory = new ByteBuffersDirectory();
     }
 
