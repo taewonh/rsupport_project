@@ -22,9 +22,11 @@ public class AnnouncementViewDto {
 
     private Timestamp updated_at;
 
-    public static AnnouncementViewDto fromEntity(Announcement announcement) {
+    public static AnnouncementViewDto fromEntity(Announcement announcement, boolean validateExpose) {
 
-        validateExpose(announcement);
+        if (validateExpose) {
+            validateExpose(announcement);
+        }
 
         return AnnouncementViewDto.builder()
                 .id(announcement.getId())

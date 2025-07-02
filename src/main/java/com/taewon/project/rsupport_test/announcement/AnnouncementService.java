@@ -21,12 +21,13 @@ public class AnnouncementService {
     private final AnnouncementCacheService announcementCacheService;
 
     @Transactional
-    public long register(AnnouncementRegisterRequest registerDto) {
+    public AnnouncementViewDto register(AnnouncementRegisterRequest registerDto) {
 
         Announcement saved = null;
         try {
             saved = registerDto.toEntity();
-            return repository.save(saved).getId();
+            repository.save(saved);
+            return AnnouncementViewDto.fromEntity(saved, false);
         } finally {
             if (saved != null) {
                 announcementCacheService.writeToIndex(saved);
@@ -43,7 +44,7 @@ public class AnnouncementService {
             throw new RuntimeException("Failed detail announcement has been already deleted.");
         }
 
-        return AnnouncementViewDto.fromEntity(announcement);
+        return AnnouncementViewDto.fromEntity(announcement, true);
     }
 
     public ListResult<AnnouncementSummaryDto> list(AnnouncementListRequest request) {
@@ -73,5 +74,21 @@ public class AnnouncementService {
 
         announcement.delete();
         announcementCacheService.deleteToIndex(announcement);
+    }
+
+    @Transactional
+    public AnnouncementViewDto update(Long announcementId, AnnouncementRegisterRequest request) {
+
+        Announcement announcement = repository.findById(announcementId)
+                .orElseThrow(() -> new RuntimeException("Failed to select announcement."));
+
+        if (announcement.getDeleted()) {
+            throw new RuntimeException("Failed update announcement has been already deleted.");
+        }
+        announcement.update(request.toEntity());
+        announcementCacheService.deleteToIndex(announcement);
+        announcementCacheService.writeToIndex(announcement);
+
+        return AnnouncementViewDto.fromEntity(announcement, false);
     }
 }

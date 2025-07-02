@@ -87,4 +87,12 @@ public class Announcement {
 
         return true;
     }
+
+    public void update(Announcement announcement) {
+
+        this.title = announcement.getTitle();
+        this.description = announcement.getDescription();
+        this.start_expose_time = announcement.getStart_expose_time();
+        this.end_expose_time = announcement.getEnd_expose_time();
+    }
 }

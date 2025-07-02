@@ -21,9 +21,9 @@ public class AnnouncementController {
 
     @Operation(summary = "01. 공지사항 등록")
     @PostMapping
-    public void registerAnnouncement(@RequestBody AnnouncementRegisterRequest request) {
+    public AnnouncementViewDto registerAnnouncement(@RequestBody AnnouncementRegisterRequest request) {
 
-        announcementService.register(request);
+        return announcementService.register(request);
     }
 
     @Operation(summary = "02. 공지사항 목록 조회")
@@ -45,5 +45,13 @@ public class AnnouncementController {
     public void deleteAnnouncement(@PathVariable Long id) {
 
         announcementService.delete(id);
+    }
+
+    @Operation(summary = "05. 공지사항 수정")
+    @PutMapping(path = "{id}")
+    public AnnouncementViewDto updateAnnouncement(@PathVariable Long id,
+                                                  @RequestBody AnnouncementRegisterRequest request) {
+
+        return announcementService.update(id, request);
     }
 }
