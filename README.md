@@ -16,3 +16,27 @@
 - 공지사항 검색
   - 검색어 : 제목 + 내용, 제목
   - 검색기간 : 등록일자
+
+[구현내용]
+- 공지사항 등록, 수정, 삭제
+  - 공지사항 등록 시 DB 반영 및 루씬 인덱스 업데이트
+- 공지사항 목록 조회
+  - 공지사항 목록 조회 시 루씬 인덱싱 된 리스트 조회
+  - 키워드 입력 시
+    - 매칭되는 타이틀이 있는 공지사항 필터링
+    - 매칭되는 내용이 있는 공지사항에 대해 열람이 가능한 경우에 대해서 필터링
+  - 검색기간 입력 시 등록일자 기준 필터링
+- 공지사항 상세 조회
+  - 열람 가능한 일자 및 시간이 아닌 경우 throw exception
+
+[개발환경]
+- Java 17 (amazon correto)
+- Spring Boot 3.5.3
+- Spring Data JPA
+- Gradle
+- Jetbrains IntelliJ IDEA
+
+[API 테스트]
+- API Document: http://localhost:8080/rsupport/swagger-ui/index.html
+- 공지사항 목록 3,000여건 일괄 조회 부하 테스트 진행
+  - JMeter 를 이용하여 총 50,000번 연속 호출 시 (Thread count 30) 평균 300ms 이내 응답
