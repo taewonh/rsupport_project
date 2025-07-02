@@ -8,6 +8,7 @@ import com.taewon.project.rsupport_test.common.dto.ListResult;
 import com.taewon.project.rsupport_test.common.lucene.SearchCacheResult;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,11 +20,18 @@ public class AnnouncementService {
 
     private final AnnouncementCacheService announcementCacheService;
 
+    @Transactional
     public long register(AnnouncementRegisterRequest registerDto) {
 
-        // TODO register 한 공지사항 데이터 캐시 refresh
-        Announcement announcement = registerDto.toEntity();
-        return repository.save(announcement).getId();
+        Announcement saved = null;
+        try {
+            saved = registerDto.toEntity();
+            return repository.save(saved).getId();
+        } finally {
+            if (saved != null) {
+                announcementCacheService.writeToIndex(saved);
+            }
+        }
     }
 
     public AnnouncementViewDto findAnnouncementView(long announcementId) {

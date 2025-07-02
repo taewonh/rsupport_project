@@ -55,7 +55,6 @@ public class AnnouncementCacheService {
 
     public SearchCacheResult search(AnnouncementListRequest request) {
 
-        List<Announcement> announcements = announcementRepository.findAll();
         try {
             SearcherManager searcherManager = announcementIndex.getSearcherManager();
             IndexSearcher searcher = searcherManager.acquire();
@@ -122,5 +121,16 @@ public class AnnouncementCacheService {
                 .documents(documents)
                 .totalCount(totalCount)
                 .build();
+    }
+
+    public void writeToIndex(Announcement announcement) {
+
+        Document doc = AnnouncementConverter.toDocument(announcement, LocalDateTime.now());
+        try {
+            announcementIndex.write(doc);
+        } catch (IOException e) {
+            log.error("Failed to write document to index.", e);
+            throw new RuntimeException(e);
+        }
     }
 }
