@@ -4,10 +4,12 @@ import com.taewon.project.rsupport_test.announcement.AnnouncementConverter.PFN;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementListRequest;
 import com.taewon.project.rsupport_test.common.lucene.LuceneUpdatableIndex;
 import com.taewon.project.rsupport_test.common.lucene.SearchCacheResult;
+import com.taewon.project.rsupport_test.common.util.DateUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -80,6 +82,13 @@ public class AnnouncementCacheService {
 
         BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder()
                 .add(new TermQuery(new Term(PFN.deleted, "F")), BooleanClause.Occur.MUST);
+
+        Long startMillis = DateUtil.toEpochMillis(request.getStart_date());
+        Long endMillis = DateUtil.toEpochMillis(request.getEnd_date());
+        if (startMillis != null && endMillis != null) {
+            Query createdAtRange = LongPoint.newRangeQuery(PFN.created_at_search, startMillis, endMillis);
+            queryBuilder.add(createdAtRange, BooleanClause.Occur.MUST);
+        }
 
         if (StringUtils.isNotEmpty(request.getKeyword())) {
 

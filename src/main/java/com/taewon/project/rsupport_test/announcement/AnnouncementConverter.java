@@ -20,6 +20,8 @@ public class AnnouncementConverter {
         public static final String deleted              =   "deleted";
         public static final String expose               =   "expose";
         public static final String created_at           =   "created_at";
+
+        public static final String created_at_search          =   "created_at_search";
         public static final String updated_at           =   "updated_at";
         public static final String updated_at_sort      =   "update_at_sort";
     }
@@ -43,11 +45,12 @@ public class AnnouncementConverter {
         document.add(new StringField(PFN.expose, Boolean.TRUE.equals(announcement.availableExpose(now)) ? "T" : "F", Field.Store.YES));
 
         long createdAtMillis = announcement.getCreatedAt().getTime();
-        document.add(new StoredField(PFN.created_at, createdAtMillis)); // 검색 결과에 표시
+        document.add(new StoredField(PFN.created_at, createdAtMillis));
+        document.add(new LongPoint(PFN.created_at_search, createdAtMillis));
 
         long updatedAtMillis = announcement.getUpdatedAt().getTime();
-        document.add(new StoredField(PFN.updated_at, updatedAtMillis)); // 검색 결과에 표시
-        document.add(new NumericDocValuesField(PFN.updated_at_sort, updatedAtMillis)); // 정렬용
+        document.add(new StoredField(PFN.updated_at, updatedAtMillis));
+        document.add(new NumericDocValuesField(PFN.updated_at_sort, updatedAtMillis));
 
         return document;
     }

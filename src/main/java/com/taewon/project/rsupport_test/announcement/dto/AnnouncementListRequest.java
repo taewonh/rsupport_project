@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Builder
 @Getter
 public class AnnouncementListRequest {
@@ -20,8 +18,8 @@ public class AnnouncementListRequest {
     public String keyword;
 
     @Schema(description="검색 시작 일자")
-    public LocalDateTime startDate;
+    public String start_date;
 
     @Schema(description="검색 종료 일자")
-    public LocalDateTime endDate;
+    public String end_date;
 }
