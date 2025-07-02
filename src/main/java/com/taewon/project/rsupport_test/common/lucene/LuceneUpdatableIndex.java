@@ -9,6 +9,7 @@ import org.apache.lucene.analysis.ngram.NGramTokenizer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.SearcherFactory;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.store.ByteBuffersDirectory;
@@ -64,6 +65,14 @@ public class LuceneUpdatableIndex implements AutoCloseable {
 
         IndexWriter _writer = getIndexWriter();
         _writer.addDocument(doc);
+        getSearcherManager().maybeRefresh();
+    }
+
+    public void delete(Term term) throws IOException {
+
+        IndexWriter _writer = getIndexWriter();
+        _writer.deleteDocuments(term);
+        _writer.commit();
         getSearcherManager().maybeRefresh();
     }
 

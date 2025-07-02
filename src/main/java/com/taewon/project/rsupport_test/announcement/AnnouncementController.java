@@ -37,6 +37,13 @@ public class AnnouncementController {
     @GetMapping(path = "/{id}")
     public AnnouncementViewDto detailAnnouncement(@PathVariable Long id) {
 
-        return announcementService.findAnnouncementView(id);
+        return announcementService.detail(id);
+    }
+
+    @Operation(summary = "04. 공지사항 삭제")
+    @DeleteMapping(path = "{id}")
+    public void deleteAnnouncement(@PathVariable Long id) {
+
+        announcementService.delete(id);
     }
 }

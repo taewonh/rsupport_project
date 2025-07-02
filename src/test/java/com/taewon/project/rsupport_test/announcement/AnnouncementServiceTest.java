@@ -39,7 +39,7 @@ public class AnnouncementServiceTest {
 
         when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(announcement));
 
-        AnnouncementViewDto announcementView = announcementService.findAnnouncementView(announcementId);
+        AnnouncementViewDto announcementView = announcementService.detail(announcementId);
 
         Assertions.assertNotNull(announcementView);
         Assertions.assertEquals(announcementId, announcementView.getId());
@@ -73,7 +73,7 @@ public class AnnouncementServiceTest {
         when(announcementRepository.findById(announcementId)).thenReturn(Optional.of(announcement));
 
         Exception exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            announcementService.findAnnouncementView(announcementId);
+            announcementService.detail(announcementId);
         });
 
         Assertions.assertEquals(

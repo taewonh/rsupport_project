@@ -34,10 +34,14 @@ public class AnnouncementService {
         }
     }
 
-    public AnnouncementViewDto findAnnouncementView(long announcementId) {
+    public AnnouncementViewDto detail(long announcementId) {
 
         Announcement announcement = repository.findById(announcementId)
                 .orElseThrow(() -> new RuntimeException("Failed to select announcement."));
+
+        if (announcement.getDeleted()) {
+            throw new RuntimeException("Failed detail announcement has been already deleted.");
+        }
 
         return AnnouncementViewDto.fromEntity(announcement);
     }
@@ -55,5 +59,19 @@ public class AnnouncementService {
                 .toList();
 
         return new ListResult<>(searchResult.getTotalCount(), request.getOffset(), announcementSummaries);
+    }
+
+    @Transactional
+    public void delete(Long announcementId) {
+
+        Announcement announcement = repository.findById(announcementId)
+                .orElseThrow(() -> new RuntimeException("Failed to select announcement."));
+
+        if (announcement.getDeleted()) {
+            throw new RuntimeException("Failed delete announcement has already been deleted");
+        }
+
+        announcement.delete();
+        announcementCacheService.deleteToIndex(announcement);
     }
 }

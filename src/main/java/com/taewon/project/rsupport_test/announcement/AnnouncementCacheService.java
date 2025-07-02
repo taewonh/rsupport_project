@@ -40,7 +40,7 @@ public class AnnouncementCacheService {
 
     private void createAnnouncementsIndex() {
 
-        List<Announcement> announcements = announcementRepository.findAll();
+        List<Announcement> announcements = announcementRepository.findAnnouncementByDeletedIsFalse();
         announcementIndex = new LuceneUpdatableIndex();
 
         LocalDateTime now = LocalDateTime.now();
@@ -92,11 +92,9 @@ public class AnnouncementCacheService {
 
         if (StringUtils.isNotEmpty(request.getKeyword())) {
 
-            // 제목에 키워드 포함 여부
             QueryParser titleParser = new QueryParser(PFN.title, announcementIndex.getAnalyzer());
             Query titleQuery = titleParser.parse(request.getKeyword());
 
-            // 공개된(description) 필드에서 키워드 포함 여부
             BooleanQuery.Builder descriptionQueryBuilder = new BooleanQuery.Builder()
                     .add(new TermQuery(new Term(AnnouncementConverter.PFN.expose, "T")), BooleanClause.Occur.MUST);
             QueryParser descriptionParser = new QueryParser(AnnouncementConverter.PFN.description, announcementIndex.getAnalyzer());
@@ -104,12 +102,10 @@ public class AnnouncementCacheService {
             descriptionQueryBuilder.add(descriptionContentQuery, BooleanClause.Occur.MUST);
             Query descriptionQuery = descriptionQueryBuilder.build();
 
-            // title 또는 description 중 하나는 반드시 포함되도록 묶음
             BooleanQuery.Builder mustContainKeywordQuery = new BooleanQuery.Builder();
             mustContainKeywordQuery.add(titleQuery, BooleanClause.Occur.SHOULD);
             mustContainKeywordQuery.add(descriptionQuery, BooleanClause.Occur.SHOULD);
 
-            // 최소 하나는 반드시 포함되도록 MUST
             queryBuilder.add(mustContainKeywordQuery.build(), BooleanClause.Occur.MUST);
         }
 
@@ -140,6 +136,17 @@ public class AnnouncementCacheService {
             announcementIndex.write(doc);
         } catch (IOException e) {
             log.error("Failed to write document to index.", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteToIndex(Announcement announcement) {
+
+        Term term = new Term(PFN.id, announcement.getId().toString());
+        try {
+            announcementIndex.delete(term);
+        } catch (IOException e) {
+            log.error("Failed to delete document to index.", e);
             throw new RuntimeException(e);
         }
     }
