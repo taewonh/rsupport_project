@@ -3,6 +3,7 @@ package com.taewon.project.rsupport_test.announcement;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementListRequest;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementRegisterRequest;
 import com.taewon.project.rsupport_test.announcement.dto.AnnouncementSummaryDto;
+import com.taewon.project.rsupport_test.announcement.dto.AnnouncementViewDto;
 import com.taewon.project.rsupport_test.common.dto.ListResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,5 +31,12 @@ public class AnnouncementController {
     public ListResult<AnnouncementSummaryDto> fetchAnnouncements(@RequestBody AnnouncementListRequest request) {
 
         return announcementService.list(request);
+    }
+
+    @Operation(summary = "03. 공지사항 상세 조회")
+    @GetMapping(path = "/{id}")
+    public AnnouncementViewDto detailAnnouncement(@PathVariable Long id) {
+
+        return announcementService.findAnnouncementView(id);
     }
 }
