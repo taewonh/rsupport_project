@@ -27,7 +27,7 @@ public class AnnouncementController {
 
     @Operation(summary = "02. 공지사항 목록 조회")
     @PostMapping(path = "/_search")
-    public ListResult<AnnouncementSummaryDto> fetchAnnouncements(@RequestBody AnnouncementListRequest request) throws Exception {
+    public ListResult<AnnouncementSummaryDto> fetchAnnouncements(@RequestBody AnnouncementListRequest request) {
 
         return announcementService.list(request);
     }

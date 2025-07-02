@@ -49,35 +49,40 @@ public class AnnouncementCacheService {
         });
     }
 
-    public SearchCacheResult search(AnnouncementListRequest request) throws Exception {
+    public SearchCacheResult search(AnnouncementListRequest request) {
 
-        SearcherManager searcherManager = announcementIndex.getSearcherManager();
-        IndexSearcher searcher = searcherManager.acquire();
+        try {
+            SearcherManager searcherManager = announcementIndex.getSearcherManager();
+            IndexSearcher searcher = searcherManager.acquire();
 
-        BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder()
-                .add(new TermQuery(new Term(AnnouncementConverter.PFN.deleted, "F")), BooleanClause.Occur.MUST);
+            BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder()
+                    .add(new TermQuery(new Term(AnnouncementConverter.PFN.deleted, "F")), BooleanClause.Occur.MUST);
 
-        Query query = queryBuilder.build();
-        TopDocs topDocs = searcher.search(query, Integer.MAX_VALUE);
+            Query query = queryBuilder.build();
+            TopDocs topDocs = searcher.search(query, Integer.MAX_VALUE);
 
-        if (topDocs.scoreDocs == null || topDocs.scoreDocs.length == 0) {
+            if (topDocs.scoreDocs == null || topDocs.scoreDocs.length == 0) {
+                return SearchCacheResult.builder()
+                        .totalCount(0)
+                        .build();
+            }
+
+            int totalCount = searcher.count(query);
+            int start = request.getOffset() * request.getCount();
+            int end = (int) Math.min(topDocs.totalHits.value, start + request.getCount());
+
+            List<Document> documents = new ArrayList<>();
+            for (int index = start; index < end; index++) {
+                documents.add(searcher.doc(topDocs.scoreDocs[index].doc));
+            }
+
             return SearchCacheResult.builder()
-                    .totalCount(0)
+                    .documents(documents)
+                    .totalCount(totalCount)
                     .build();
+        } catch (Exception e) {
+            log.error("Failed to search announcement list.", e);
+            throw new RuntimeException(e);
         }
-
-        int totalCount = searcher.count(query);
-        int start = request.getOffset() * request.getCount();
-        int end = (int) Math.min(topDocs.totalHits.value, start + request.getCount());
-
-        List<Document> documents = new ArrayList<>();
-        for (int index = start ; index < end ; index++) {
-            documents.add(searcher.doc(topDocs.scoreDocs[index].doc));
-        }
-
-        return SearchCacheResult.builder()
-                .documents(documents)
-                .totalCount(totalCount)
-                .build();
     }
 }

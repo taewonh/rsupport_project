@@ -34,7 +34,7 @@ public class AnnouncementService {
         return AnnouncementViewDto.fromEntity(announcement);
     }
 
-    public ListResult<AnnouncementSummaryDto> list(AnnouncementListRequest request) throws Exception {
+    public ListResult<AnnouncementSummaryDto> list(AnnouncementListRequest request) {
 
         SearchCacheResult searchResult = announcementCacheService.search(request);
         if (searchResult.getDocuments() == null) {
