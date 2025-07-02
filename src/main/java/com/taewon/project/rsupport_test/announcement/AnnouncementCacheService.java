@@ -60,7 +60,8 @@ public class AnnouncementCacheService {
             IndexSearcher searcher = searcherManager.acquire();
 
             Query query = toAnnouncementSearchQuery(request);
-            TopDocs topDocs = searcher.search(query, Integer.MAX_VALUE);
+            Sort sort = new Sort(new SortField(PFN.updated_at_sort, SortField.Type.LONG, true));
+            TopDocs topDocs = searcher.search(query, Integer.MAX_VALUE, sort);
 
             if (topDocs.scoreDocs == null || topDocs.scoreDocs.length == 0) {
                 return SearchCacheResult.builder()

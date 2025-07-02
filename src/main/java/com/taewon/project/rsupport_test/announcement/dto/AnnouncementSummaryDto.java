@@ -3,7 +3,7 @@ package com.taewon.project.rsupport_test.announcement.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Builder
 @Getter
@@ -15,7 +15,7 @@ public class AnnouncementSummaryDto {
 
     private String author;
 
-    private Timestamp created_at;
+    private LocalDateTime created_at;
 
-    private Timestamp updated_at;
+    private LocalDateTime updated_at;
 }
